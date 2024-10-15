@@ -6,6 +6,25 @@ import numpy as np
 import random 
 import torch.optim as optim
 import string
+import pickle
+
+
+# utility functions
+# added them to save the current state of the model and save the current dataset
+def save_model(model, path):
+    torch.save(model.state_dict(), path)
+
+def load_model(model, path):
+    model.load_state_dict(torch.load(path))
+    model.to(model.device)
+
+def save_dataset(dataset, path):
+    with open(path, 'wb') as f:
+        pickle.dump(dataset, f)
+
+def load_dataset(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
 
 
 
@@ -35,7 +54,7 @@ class TransformerBlock(nn.Module):
 
 
 class AdvancedTokenizer:
-    def __init__(self, lowercase=True):
+    def __init__(self, lowercase=True, max_seq_len=50):
         chars = string.ascii_letters + string.digits + string.punctuation + " "
         self.stoi = {ch: i for i, ch in enumerate(chars)}
         self.itos = {i: ch for i, ch in enumerate(chars)}
@@ -58,6 +77,7 @@ class AdvancedTokenizer:
         
         self.vocab_size = len(self.stoi)
         self.lowercase = lowercase  
+        self.max_seq_len = max_seq_len  
 
     def encode(self, text, max_len=None):
         if self.lowercase:
@@ -79,7 +99,6 @@ class AdvancedTokenizer:
         if max_len is None:
             max_len = self.max_seq_len  
         return [self.encode(text, max_len=max_len) for text in texts]
-
 
     def batch_decode(self, batch_token_ids):
         return [self.decode(token_ids) for token_ids in batch_token_ids]
@@ -177,7 +196,8 @@ def train_single_example(model, tokenizer, problem, solution, optimizer, loss_fn
 
 # Training block
 
-def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, learning_rate, max_seq_len):
+# Training block
+def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, learning_rate, max_seq_len, model_path='model.pth', dataset_path='dataset.pkl'):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -219,6 +239,9 @@ def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, lear
         avg_val_loss = val_loss / len(val_loader)
 
         print(f"Epoch {epoch+1}/{epochs}, Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
+
+    save_model(model, model_path)
+    save_dataset((problems1, solutions1), dataset_path)
     print("Training completed successfully!")
 
 # generating block
@@ -783,4 +806,5 @@ val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=5
 
 
 train(model, train_dataset, val_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50)
+
 
