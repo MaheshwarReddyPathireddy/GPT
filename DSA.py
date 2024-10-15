@@ -260,7 +260,8 @@ problems = [
     "Implement a breadth-first search algorithm",
     "Write a function to check if a string is a palindrome",
     "Implement a hash table",
-    "Write a function to find the longest common subsequence of two strings"
+    "Write a function to find the longest common subsequence of two strings",
+    "Given an array of size N.Find the maximum and the minimum element of the array using the minimum number of comparisons."
 ]
 
 solutions = [
@@ -429,7 +430,42 @@ def longest_common_subsequence(s1, s2):
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    return dp[m][n]"""]
+    return dp[m][n]""",
+    """
+    def find_max_min(arr):
+        n = len(arr)
+        
+        if n == 0:
+            return None, None
+        
+        if n % 2 == 0:
+            if arr[0] > arr[1]:
+                max_element = arr[0]
+                min_element = arr[1]
+            else:
+                max_element = arr[1]
+                min_element = arr[0]
+            i = 2
+        else:
+            max_element = arr[0]
+            min_element = arr[0]
+            i = 1
+        
+        while i < n - 1:
+            if arr[i] > arr[i + 1]:
+                if arr[i] > max_element:
+                    max_element = arr[i]
+                if arr[i + 1] < min_element:
+                    min_element = arr[i + 1]
+            else:
+                if arr[i + 1] > max_element:
+                    max_element = arr[i + 1]
+                if arr[i] < min_element:
+                    min_element = arr[i]
+            i += 2
+        
+        return max_element, min_element
+    """]
 
 train_dataset = DSADataset(problems, solutions, tokenizer, max_seq_len=50)
 
