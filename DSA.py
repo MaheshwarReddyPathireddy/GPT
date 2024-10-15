@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 
 # utility functions
 # added them to save the current state of the model and save the current dataset
+
 def save_model(model, path):
     torch.save(model.state_dict(), path)
 
@@ -242,10 +243,11 @@ def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, lear
 
         print(f"Epoch {epoch+1}/{epochs}, Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
 
-    
     save_model(model, model_path)
     save_dataset((problems1, solutions1), dataset_path)
     print("Training completed successfully!")
+
+
 
 # generating block
 
@@ -287,7 +289,33 @@ problems = [
     "Write a function to check if a string is a palindrome",
     "Implement a hash table",
     "Write a function to find the longest common subsequence of two strings",
-    "Given an array of size N.Find the maximum and the minimum element of the array using the minimum number of comparisons."
+    "Reverse the Array: Given an array, reverse the order of its elements in place.",
+    "Maximum-Subarray: Find the contiguous subarray within an array (containing at least one number) which has the largest sum.",
+    "Contains Duplicate: Given an array of integers, find if the array contains any duplicates.",
+    "Chocolate Distribution Problem: Given an array of integers representing the number of chocolates in each packet, distribute the chocolates among students such that the difference between the maximum and minimum number of chocolates given to any student is minimized.",
+    "Search in Rotated Sorted Array: Given a sorted array that has been rotated at an unknown pivot index, find if a target value exists in the array.",
+    "Next Permutation: Implement the next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.",
+    "Best time to Buy and Sell Stock: Given an array of stock prices, find the maximum profit that can be achieved by buying and selling the stock once.",
+    "Repeat and Missing Number Array: Given an array of size N, where each element is in the range [1, N], find the repeating and missing numbers.",
+    "Kth-Largest Element in an Array: Find the kth largest element in an unsorted array.",
+    "Trapping Rain Water: Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+    "Product of Array Except Self: Given an array nums, return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].",
+    "Maximum Product Subarray: Given an integer array nums, find the contiguous subarray within an array (containing at least one number) which has the largest product.",
+    "Find Minimum in Rotated Sorted Array: Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand. Find the minimum element.",
+    "Find Pair with Sum in Sorted & Rotated Array: Given a sorted and rotated array, find a pair with a given sum.",
+    "3Sum: Given an array nums of n integers, find all unique triplets in the array which gives the sum of zero.",
+    "Container With Most Water: Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of the line i is at (i, ai) and (i, 0). Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.",
+    "Given Sum Pair: Given an array of integers and a target sum, find a pair of numbers in the array that add up to the target sum.",
+    "Kth - Smallest Element: Find the kth smallest element in an unsorted array.",
+    "Merge Overlapping Intervals: Given a collection of intervals, merge all overlapping intervals.",
+    "Find Minimum Number of Merge Operations to Make an Array Palindrome: Given an array of positive integers, find the minimum number of merge operations required to make the array a palindrome.",
+    "Given an Array of Numbers Arrange the Numbers to Form the Biggest Number: Given an array of non-negative integers, arrange them such that they form the largest number.",
+    "Space Optimization Using Bit Manipulations: Given an array of integers, use bit manipulations to optimize space usage.",
+    "Subarray Sum Divisible K: Given an array of integers and a number k, find the total number of continuous subarrays whose sum is divisible by k.",
+    "Print all Possible Combinations of r Elements in a Given Array of Size n: Given an array of size n, generate all possible combinations of r elements.",
+    "Mo's Algorithm: Given an array of integers and a set of queries, use Mo's Algorithm to efficiently answer the queries.",
+    " Given a string s, return true if it is a palindrome, or false otherwise"
+    
 ]
 
 solutions = [
@@ -456,71 +484,8 @@ def longest_common_subsequence(s1, s2):
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    return dp[m][n]""",
-    """
-    def find_max_min(arr):
-        n = len(arr)
-        
-        if n == 0:
-            return None, None
-        
-        if n % 2 == 0:
-            if arr[0] > arr[1]:
-                max_element = arr[0]
-                min_element = arr[1]
-            else:
-                max_element = arr[1]
-                min_element = arr[0]
-            i = 2
-        else:
-            max_element = arr[0]
-            min_element = arr[0]
-            i = 1
-        
-        while i < n - 1:
-            if arr[i] > arr[i + 1]:
-                if arr[i] > max_element:
-                    max_element = arr[i]
-                if arr[i + 1] < min_element:
-                    min_element = arr[i + 1]
-            else:
-                if arr[i + 1] > max_element:
-                    max_element = arr[i + 1]
-                if arr[i] < min_element:
-                    min_element = arr[i]
-            i += 2
-        
-        return max_element, min_element
-    """]
-problems1 = [
-    "Reverse the Array: Given an array, reverse the order of its elements in place.",
-    "Maximum-Subarray: Find the contiguous subarray within an array (containing at least one number) which has the largest sum.",
-    "Contains Duplicate: Given an array of integers, find if the array contains any duplicates.",
-    "Chocolate Distribution Problem: Given an array of integers representing the number of chocolates in each packet, distribute the chocolates among students such that the difference between the maximum and minimum number of chocolates given to any student is minimized.",
-    "Search in Rotated Sorted Array: Given a sorted array that has been rotated at an unknown pivot index, find if a target value exists in the array.",
-    "Next Permutation: Implement the next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.",
-    "Best time to Buy and Sell Stock: Given an array of stock prices, find the maximum profit that can be achieved by buying and selling the stock once.",
-    "Repeat and Missing Number Array: Given an array of size N, where each element is in the range [1, N], find the repeating and missing numbers.",
-    "Kth-Largest Element in an Array: Find the kth largest element in an unsorted array.",
-    "Trapping Rain Water: Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
-    "Product of Array Except Self: Given an array nums, return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].",
-    "Maximum Product Subarray: Given an integer array nums, find the contiguous subarray within an array (containing at least one number) which has the largest product.",
-    "Find Minimum in Rotated Sorted Array: Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand. Find the minimum element.",
-    "Find Pair with Sum in Sorted & Rotated Array: Given a sorted and rotated array, find a pair with a given sum.",
-    "3Sum: Given an array nums of n integers, find all unique triplets in the array which gives the sum of zero.",
-    "Container With Most Water: Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of the line i is at (i, ai) and (i, 0). Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.",
-    "Given Sum Pair: Given an array of integers and a target sum, find a pair of numbers in the array that add up to the target sum.",
-    "Kth - Smallest Element: Find the kth smallest element in an unsorted array.",
-    "Merge Overlapping Intervals: Given a collection of intervals, merge all overlapping intervals.",
-    "Find Minimum Number of Merge Operations to Make an Array Palindrome: Given an array of positive integers, find the minimum number of merge operations required to make the array a palindrome.",
-    "Given an Array of Numbers Arrange the Numbers to Form the Biggest Number: Given an array of non-negative integers, arrange them such that they form the largest number.",
-    "Space Optimization Using Bit Manipulations: Given an array of integers, use bit manipulations to optimize space usage.",
-    "Subarray Sum Divisible K: Given an array of integers and a number k, find the total number of continuous subarrays whose sum is divisible by k.",
-    "Print all Possible Combinations of r Elements in a Given Array of Size n: Given an array of size n, generate all possible combinations of r elements.",
-    "Mo's Algorithm: Given an array of integers and a set of queries, use Mo's Algorithm to efficiently answer the queries."
-]
-
-solutions1 = [
+    return dp[m][n]
+    """,
     """
 def reverse_array(arr):
     return arr[::-1]
@@ -798,6 +763,11 @@ def mo_algorithm(arr, queries):
         left, right = query
         results.append(sum(arr[left:right + 1]))
     return results
+    """,
+    """
+def is_palindrome(s: str) -> bool:
+    s = ''.join(c.lower() for c in s if c.isalnum())
+    return s == s[::-1]
     """
 ]
 
@@ -812,31 +782,38 @@ model = DSASolutionGenerator(vocab_size=tokenizer.vocab_size, embed_size=256, nu
 if os.path.exists(model_path):
     print("Loading existing model and dataset...")
     load_model(model, model_path)
-    problems1, solutions1 = load_dataset(dataset_path)
+    problems, solutions = load_dataset(dataset_path)
 else:
     print("No existing model found. Training from scratch...")
-    problems1 = []
-    solutions1 = []
+    problem = []
+    solutions = []
 
-initial_length = len(problems1)
+print("Current Dataset:")
+for pro, sol in zip(problems, solutions):
+    print(f"Problem: {pro}")
+    print(f"Solution: {sol}")
+    print()
 
-new_problems = ["New problem 1", "New problem 2"]
-new_solutions = ["New solution 1", "New solution 2"]
+initial_length = len(problems)
 
-if new_problems != problems1[-len(new_problems):] or new_solutions != solutions1[-len(new_solutions):]:
-    problems1.extend(new_problems)
-    solutions1.extend(new_solutions)
+# place for adding new problems and solutions
+
+
+new_problems = []
+new_solutions = []
+
+if new_problems != problems[-len(new_problems):] or new_solutions != solutions[-len(new_solutions):]:
+    problems.extend(new_problems)
+    solutions.extend(new_solutions)
 else:
     print("No new data to train the model. Add new data to continue training.")
     exit()
 
-if len(problems1) == initial_length:
+if len(problems) == initial_length:
     print("No new data to train the model. Add new data to continue training.")
 else:
-    
-    
-
-    problems1_train, problems1_val, solutions1_train, solutions1_val = train_test_split(problems1, solutions1, test_size=0.2, random_state=42)
+   
+    problems1_train, problems1_val, solutions1_train, solutions1_val = train_test_split(problems, solutions, test_size=0.2, random_state=42)
 
     train_dataset = DSADataset(problems1_train, solutions1_train, tokenizer, max_seq_len=50)
     val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=50)
