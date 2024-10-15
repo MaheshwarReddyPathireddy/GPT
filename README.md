@@ -1,2 +1,2 @@
 # GPT
-another one intended to solve dsa questions in python
+Generative pre trained transformer  built on the transformers architecture and trained on python data structures and algorithm problems
