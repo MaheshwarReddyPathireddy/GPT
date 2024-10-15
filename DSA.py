@@ -7,6 +7,8 @@ import random
 import torch.optim as optim
 import string
 import pickle
+import os
+from sklearn.model_selection import train_test_split
 
 
 # utility functions
@@ -15,7 +17,7 @@ def save_model(model, path):
     torch.save(model.state_dict(), path)
 
 def load_model(model, path):
-    model.load_state_dict(torch.load(path))
+    model.load_state_dict(torch.load(path, weights_only=True))
     model.to(model.device)
 
 def save_dataset(dataset, path):
@@ -196,7 +198,7 @@ def train_single_example(model, tokenizer, problem, solution, optimizer, loss_fn
 
 # Training block
 
-# Training block
+
 def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, learning_rate, max_seq_len, model_path='model.pth', dataset_path='dataset.pkl'):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
@@ -240,6 +242,7 @@ def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, lear
 
         print(f"Epoch {epoch+1}/{epochs}, Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
 
+    
     save_model(model, model_path)
     save_dataset((problems1, solutions1), dataset_path)
     print("Training completed successfully!")
@@ -797,14 +800,45 @@ def mo_algorithm(arr, queries):
     return results
     """
 ]
-from sklearn.model_selection import train_test_split
-
-problems1_train, problems1_val, solutions1_train, solutions1_val = train_test_split(problems1, solutions1, test_size=0.2, random_state=42)
-
-train_dataset = DSADataset(problems1_train, solutions1_train, tokenizer, max_seq_len=50)
-val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=50)
 
 
-train(model, train_dataset, val_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50)
+model_path = 'model.pth'
+dataset_path = 'dataset.pkl'
 
+tokenizer = AdvancedTokenizer(max_seq_len=50)
 
+model = DSASolutionGenerator(vocab_size=tokenizer.vocab_size, embed_size=256, num_heads=8, num_layers=4, max_seq_len=50)
+
+if os.path.exists(model_path):
+    print("Loading existing model and dataset...")
+    load_model(model, model_path)
+    problems1, solutions1 = load_dataset(dataset_path)
+else:
+    print("No existing model found. Training from scratch...")
+    problems1 = []
+    solutions1 = []
+
+initial_length = len(problems1)
+
+new_problems = ["New problem 1", "New problem 2"]
+new_solutions = ["New solution 1", "New solution 2"]
+
+if new_problems != problems1[-len(new_problems):] or new_solutions != solutions1[-len(new_solutions):]:
+    problems1.extend(new_problems)
+    solutions1.extend(new_solutions)
+else:
+    print("No new data to train the model. Add new data to continue training.")
+    exit()
+
+if len(problems1) == initial_length:
+    print("No new data to train the model. Add new data to continue training.")
+else:
+    
+    
+
+    problems1_train, problems1_val, solutions1_train, solutions1_val = train_test_split(problems1, solutions1, test_size=0.2, random_state=42)
+
+    train_dataset = DSADataset(problems1_train, solutions1_train, tokenizer, max_seq_len=50)
+    val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=50)
+
+    train(model, train_dataset, val_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50, model_path=model_path, dataset_path=dataset_path)
