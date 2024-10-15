@@ -247,7 +247,7 @@ def generate_solution(model, tokenizer, problem, max_tokens=100):
 
 # training the model
 
-tokenizer = AdvancedTokenizer()
+tokenizer = AdvancedTokenizer(max_seq_len=50)
 model = DSASolutionGenerator(vocab_size=tokenizer.vocab_size, embed_size=256, num_heads=8, num_layers=4, max_seq_len=50)
 
 problems = [
@@ -466,9 +466,321 @@ def longest_common_subsequence(s1, s2):
         
         return max_element, min_element
     """]
+problems1 = [
+    "Reverse the Array: Given an array, reverse the order of its elements in place.",
+    "Maximum-Subarray: Find the contiguous subarray within an array (containing at least one number) which has the largest sum.",
+    "Contains Duplicate: Given an array of integers, find if the array contains any duplicates.",
+    "Chocolate Distribution Problem: Given an array of integers representing the number of chocolates in each packet, distribute the chocolates among students such that the difference between the maximum and minimum number of chocolates given to any student is minimized.",
+    "Search in Rotated Sorted Array: Given a sorted array that has been rotated at an unknown pivot index, find if a target value exists in the array.",
+    "Next Permutation: Implement the next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.",
+    "Best time to Buy and Sell Stock: Given an array of stock prices, find the maximum profit that can be achieved by buying and selling the stock once.",
+    "Repeat and Missing Number Array: Given an array of size N, where each element is in the range [1, N], find the repeating and missing numbers.",
+    "Kth-Largest Element in an Array: Find the kth largest element in an unsorted array.",
+    "Trapping Rain Water: Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+    "Product of Array Except Self: Given an array nums, return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].",
+    "Maximum Product Subarray: Given an integer array nums, find the contiguous subarray within an array (containing at least one number) which has the largest product.",
+    "Find Minimum in Rotated Sorted Array: Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand. Find the minimum element.",
+    "Find Pair with Sum in Sorted & Rotated Array: Given a sorted and rotated array, find a pair with a given sum.",
+    "3Sum: Given an array nums of n integers, find all unique triplets in the array which gives the sum of zero.",
+    "Container With Most Water: Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of the line i is at (i, ai) and (i, 0). Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.",
+    "Given Sum Pair: Given an array of integers and a target sum, find a pair of numbers in the array that add up to the target sum.",
+    "Kth - Smallest Element: Find the kth smallest element in an unsorted array.",
+    "Merge Overlapping Intervals: Given a collection of intervals, merge all overlapping intervals.",
+    "Find Minimum Number of Merge Operations to Make an Array Palindrome: Given an array of positive integers, find the minimum number of merge operations required to make the array a palindrome.",
+    "Given an Array of Numbers Arrange the Numbers to Form the Biggest Number: Given an array of non-negative integers, arrange them such that they form the largest number.",
+    "Space Optimization Using Bit Manipulations: Given an array of integers, use bit manipulations to optimize space usage.",
+    "Subarray Sum Divisible K: Given an array of integers and a number k, find the total number of continuous subarrays whose sum is divisible by k.",
+    "Print all Possible Combinations of r Elements in a Given Array of Size n: Given an array of size n, generate all possible combinations of r elements.",
+    "Mo's Algorithm: Given an array of integers and a set of queries, use Mo's Algorithm to efficiently answer the queries."
+]
 
-train_dataset = DSADataset(problems, solutions, tokenizer, max_seq_len=50)
+solutions1 = [
+    """
+def reverse_array(arr):
+    return arr[::-1]
+    """,
+    """
+def max_subarray(nums):
+    max_ending_here = max_so_far = nums[0]
+    for x in nums[1:]:
+        max_ending_here = max(x, max_ending_here + x)
+        max_so_far = max(max_so_far, max_ending_here)
+    return max_so_far
+    """,
+    """
+def contains_duplicate(nums):
+    return len(nums) != len(set(nums))
+    """,
+    """
+def chocolate_distribution(arr, m):
+    arr.sort()
+    min_diff = float('inf')
+    for i in range(len(arr) - m + 1):
+        min_diff = min(min_diff, arr[i + m - 1] - arr[i])
+    return min_diff
+    """,
+    """
+def search_rotated_sorted_array(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[left] <= nums[mid]:
+            if nums[left] <= target < nums[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:
+            if nums[mid] < target <= nums[right]:
+                left = mid + 1
+            else:
+                right = mid - 1
+    return -1
+    """,
+    """
+def next_permutation(nums):
+    i = len(nums) - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+    if i >= 0:
+        j = len(nums) - 1
+        while nums[j] <= nums[i]:
+            j -= 1
+        nums[i], nums[j] = nums[j], nums[i]
+    nums[i + 1:] = reversed(nums[i + 1:])
+    return nums
+    """,
+    """
+def max_profit(prices):
+    min_price = float('inf')
+    max_profit = 0
+    for price in prices:
+        min_price = min(min_price, price)
+        profit = price - min_price
+        max_profit = max(max_profit, profit)
+    return max_profit
+    """,
+    """
+def find_repeat_missing(nums):
+    n = len(nums)
+    xor = 0
+    for i in range(1, n + 1):
+        xor ^= i
+    for num in nums:
+        xor ^= num
+    set_bit = xor & ~(xor - 1)
+    x = 0
+    y = 0
+    for i in range(1, n + 1):
+        if i & set_bit:
+            x ^= i
+        else:
+            y ^= i
+    for num in nums:
+        if num & set_bit:
+            x ^= num
+        else:
+            y ^= num
+    return x, y
+    """,
+    """
+import heapq
+def kth_largest_element(nums, k):
+    return heapq.nlargest(k, nums)[-1]
+    """,
+    """
+def trap_rain_water(height):
+    if not height:
+        return 0
+    left, right = 0, len(height) - 1
+    left_max, right_max = height[left], height[right]
+    water = 0
+    while left < right:
+        if left_max < right_max:
+            left += 1
+            left_max = max(left_max, height[left])
+            water += left_max - height[left]
+        else:
+            right -= 1
+            right_max = max(right_max, height[right])
+            water += right_max - height[right]
+    return water
+    """,
+    """
+def product_except_self(nums):
+    n = len(nums)
+    output = [1] * n
+    left = 1
+    for i in range(n):
+        output[i] *= left
+        left *= nums[i]
+    right = 1
+    for i in range(n - 1, -1, -1):
+        output[i] *= right
+        right *= nums[i]
+    return output
+    """,
+    """
+def max_product_subarray(nums):
+    max_product = min_product = result = nums[0]
+    for i in range(1, len(nums)):
+        if nums[i] < 0:
+            max_product, min_product = min_product, max_product
+        max_product = max(nums[i], max_product * nums[i])
+        min_product = min(nums[i], min_product * nums[i])
+        result = max(result, max_product)
+    return result
+    """,
+    """
+def find_min_rotated_sorted_array(nums):
+    left, right = 0, len(nums) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] > nums[right]:
+            left = mid + 1
+        else:
+            right = mid
+    return nums[left]
+    """,
+    """
+def find_pair_with_sum(arr, target):
+    n = len(arr)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if arr[i] + arr[j] == target:
+                return (arr[i], arr[j])
+    return None
+    """,
+    """
+def three_sum(nums):
+    nums.sort()
+    result = []
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            total = nums[i] + nums[left] + nums[right]
+            if total < 0:
+                left += 1
+            elif total > 0:
+                right -= 1
+            else:
+                result.append([nums[i], nums[left], nums[right]])
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+                left += 1
+                right -= 1
+    return result
+    """,
+    """
+def max_area(height):
+    left, right = 0, len(height) - 1
+    max_water = 0
+    while left < right:
+        max_water = max(max_water, min(height[left], height[right]) * (right - left))
+        if height[left] < height[right]:
+            left += 1
+        else:
+            right -= 1
+    return max_water
+    """,
+    """
+def given_sum_pair(arr, target):
+    seen = set()
+    for num in arr:
+        complement = target - num
+        if complement in seen:
+            return (complement, num)
+        seen.add(num)
+    return None
+    """,
+    """
+import heapq
+def kth_smallest_element(nums, k):
+    return heapq.nsmallest(k, nums)[-1]
+    """,
+    """
+def merge_intervals(intervals):
+    if not intervals:
+        return []
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    for current in intervals:
+        if current[0] <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], current[1])
+        else:
+            merged.append(current)
+    return merged
+    """,
+    """
+def min_merge_operations(arr):
+    i, j = 0, len(arr) - 1
+    merge_ops = 0
+    while i <= j:
+        if arr[i] == arr[j]:
+            i += 1
+            j -= 1
+        elif arr[i] < arr[j]:
+            i += 1
+            arr[i] += arr[i - 1]
+            merge_ops += 1
+        else:
+            j -= 1
+            arr[j] += arr[j + 1]
+            merge_ops += 1
+    return merge_ops
+    """,
+    """
+from functools import cmp_to_key
+def largest_number(nums):
+    nums = list(map(str, nums))
+    nums.sort(key=cmp_to_key(lambda x, y: ((y + x) > (x + y)) - ((y + x) < (x + y))))
+    return ''.join(nums).lstrip('0') or '0'
+    """,
+    """
+def space_optimization_bit_manipulations(arr):
+    xor = 0
+    for num in arr:
+        xor ^= num
+    return xor
+    """,
+    """
+def subarray_sum_divisible_k(nums, k):
+    count = 0
+    prefix_sum = 0
+    mod_count = [0] * k
+    mod_count[0] = 1
+    for num in nums:
+        prefix_sum = (prefix_sum + num) % k
+        count += mod_count[prefix_sum]
+        mod_count[prefix_sum] += 1
+    return count
+    """,
+    """
+from itertools import combinations
+def combinations_r_elements(arr, r):
+    return list(combinations(arr, r))
+    """,
+    """
+def mo_algorithm(arr, queries):
+    results = []
+    for query in queries:
+        left, right = query
+        results.append(sum(arr[left:right + 1]))
+    return results
+    """
+]
+from sklearn.model_selection import train_test_split
+
+problems1_train, problems1_val, solutions1_train, solutions1_val = train_test_split(problems1, solutions1, test_size=0.2, random_state=42)
+
+train_dataset = DSADataset(problems1_train, solutions1_train, tokenizer, max_seq_len=50)
+val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=50)
 
 
-train(model, train_dataset, train_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50)
+train(model, train_dataset, val_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50)
 
