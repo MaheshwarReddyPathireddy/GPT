@@ -244,7 +244,7 @@ def train(model, train_dataset, val_dataset, tokenizer, epochs, batch_size, lear
         print(f"Epoch {epoch+1}/{epochs}, Train Loss: {avg_train_loss:.4f}, Validation Loss: {avg_val_loss:.4f}")
 
     save_model(model, model_path)
-    save_dataset((problems1, solutions1), dataset_path)
+    save_dataset((problems, solutions), dataset_path)
     print("Training completed successfully!")
 
 
@@ -787,20 +787,106 @@ else:
     print("No existing model found. Training from scratch...")
     problem = []
     solutions = []
-
-print("Current Dataset:")
+# for printing the dataset
+# commented it and only using whenever required
+"""print("Current Dataset:")
 for pro, sol in zip(problems, solutions):
     print(f"Problem: {pro}")
     print(f"Solution: {sol}")
     print()
-
+"""
 initial_length = len(problems)
 
 # place for adding new problems and solutions
 
 
-new_problems = []
-new_solutions = []
+new_problems = [
+    "Variables in Python",
+    "Dynamic typing in Python",
+    "Variable naming conventions",
+    "Data types in Python",
+    "Variable scope in Python",
+    "Variable operations in Python",
+    "Variable deletion in Python",
+    "Best practices for using variables in Python"
+]
+
+new_solutions = [
+    """
+    Variables in Python are created by assigning values. No type declaration is needed.
+    Code:
+    x = 10  # x is now an integer
+    y = "Hello"  # y is now a string
+    """,
+    """
+    Python is dynamically typed, meaning variable types are inferred from assigned values.
+    Code:
+    x = 10  # x is an integer
+    x = "Hello"  # x is now a string
+    """,
+    """
+    Python variables should follow naming conventions like snake_case for variables and CONSTANT_CASE for constants.
+    Code:
+    my_variable = 10  # snake_case
+    MAX_VALUE = 100  # CONSTANT_CASE
+    """,
+    """
+    Python supports data types like int, float, str, list, tuple, and dict.
+    Code:
+    int_var = 10  # integer
+    float_var = 3.14  # float
+    str_var = "Hello"  # string
+    list_var = [1, 2, 3]  # list
+    tuple_var = (1, 2, 3)  # tuple
+    dict_var = {"key": "value"}  # dictionary
+    """,
+    """
+    Variables can have local, global, or nonlocal scope depending on where they are defined.
+    Code:
+    global_var = 10  # global variable
+
+    def my_function():
+        local_var = 20  # local variable
+        print(local_var)
+
+    def outer_function():
+        nonlocal_var = 30  # nonlocal variable
+        def inner_function():
+            nonlocal nonlocal_var
+            nonlocal_var += 1
+            print(nonlocal_var)
+        inner_function()
+    """,
+    """
+    Variables support various operations like assignment, arithmetic, comparison, logical, identity, and membership.
+    Code:
+    x = 10  # assignment
+    x += 5  # arithmetic operation
+    y = 15
+    print(x == y)  # comparison operation
+    print(x > 5 and y < 20)  # logical operation
+    print(x is y)  # identity operation
+    print(x in [10, 20, 30])  # membership operation
+    """,
+    """
+    Variables can be deleted using the `del` statement to remove them from their scope.
+    Code:
+    x = 10
+    del x  # x is deleted
+    """,
+    """
+    Best practices include using descriptive names, avoiding single-letter variables, and maintaining consistent naming styles.
+    Code:
+    # Good practice
+    user_age = 25
+    total_amount = 1000
+
+    # Avoid single-letter variables
+    # Bad practice
+    a = 25
+    b = 1000
+    """
+]
 
 if new_problems != problems[-len(new_problems):] or new_solutions != solutions[-len(new_solutions):]:
     problems.extend(new_problems)
@@ -819,3 +905,6 @@ else:
     val_dataset = DSADataset(problems1_val, solutions1_val, tokenizer, max_seq_len=50)
 
     train(model, train_dataset, val_dataset, tokenizer, epochs=10, batch_size=2, learning_rate=0.001, max_seq_len=50, model_path=model_path, dataset_path=dataset_path)
+
+
+
